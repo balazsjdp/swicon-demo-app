@@ -3,26 +3,26 @@
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "frontend/src",
+  "sourceRoot": "apps/frontend/src",
   "tags": [],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/frontend",
-        "index": "frontend/src/index.html",
-        "browser": "frontend/src/main.ts",
+        "outputPath": "apps/dist/frontend",
+        "index": "apps/frontend/src/index.html",
+        "browser": "apps/frontend/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "frontend/tsconfig.app.json",
+        "tsConfig": "apps/frontend/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "frontend/public"
+            "input": "apps/frontend/public"
           }
         ],
-        "styles": ["frontend/src/styles.scss"],
+        "styles": ["apps/frontend/src/styles.scss"],
         "scripts": []
       },
       "configurations": {
@@ -64,7 +64,7 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "buildTarget": "frontend:build"
+        "buildTarget": "apps/frontend:build"
       }
     },
     "lint": {
@@ -74,14 +74,14 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "frontend/jest.config.ts"
+        "jestConfig": "apps/frontend/jest.config.ts"
       }
     },
     "serve-static": {
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "frontend:build",
-        "staticFilePath": "dist/frontend/browser",
+        "buildTarget": "apps/frontend:build",
+        "staticFilePath": "apps/dist/frontend/browser",
         "spa": true
       }
     }
