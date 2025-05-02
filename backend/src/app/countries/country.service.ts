@@ -20,8 +20,12 @@ export class CountryService {
   ) {}
 
   /**
-   * Retrieves a list of countries.
-   * @returns {Promise<CountryListEntry[]>} A promise that resolves to an array of country list entries.
+   * Retrieves a list of countries from the SOAP service or cache.
+   *
+   * Uses a cached value if available; otherwise, it fetches the list from the SOAP client
+   * and maps each raw country entry to a simplified structure.
+   *
+   * @returns {Promise<CountryListEntry[]>} A promise that resolves to an array of country list entries with ISO codes and names.
    */
   async getCountryList(): Promise<CountryListEntry[]> {
     return this.returnCached(COUNTRY_LIST_CACHE_KEY, 'Returning cached country list', async () => {
@@ -37,8 +41,16 @@ export class CountryService {
   }
   /**
    * Retrieves detailed information for a specific country based on its ISO code.
-   * @param {string} isoCode - The ISO code of the country.
-   * @returns {Promise<CountryDetails>} A promise that resolves to the details of the specified country.
+   *
+   * If the information is cached, it is returned directly. Otherwise, the method fetches:
+   * - Capital city
+   * - Currency ISO code
+   * - Country flag URL
+   * - International phone code
+   * from the SOAP service in parallel, and returns them in a structured format.
+   *
+   * @param {string} isoCode - The ISO 3166-1 alpha-2 code of the country (e.g., "US", "FR").
+   * @returns {Promise<CountryDetails>} A promise that resolves to the country's detailed information.
    */
   async getCountryDetails(isoCode: string): Promise<CountryDetails> {
     return this.returnCached<CountryDetails>(
@@ -65,11 +77,15 @@ export class CountryService {
   }
 
   /**
-   * Returns a cached value if available; otherwise, invokes the callback to retrieve the value and caches it.
+   * Returns a cached value if available; otherwise, invokes the provided callback
+   * to retrieve the value, caches it, and returns the result.
+   *
+   * This method also logs an info message when a cached result is returned.
+   *
    * @template T
-   * @param {string} key - The cache key.
-   * @param {string} infoMessage - A message to log or track when caching is used.
-   * @param {() => Promise<T>} cb - The callback function to execute if the value is not cached.
+   * @param {string} key - The key used to retrieve or store the cached value.
+   * @param {string} infoMessage - A message to log if a cached value is returned.
+   * @param {() => Promise<T>} cb - An asynchronous callback that returns the value to cache if not already cached.
    * @returns {Promise<T>} A promise that resolves to the cached or freshly retrieved value.
    * @private
    */
