@@ -1,3 +1,3 @@
 export interface PhoneCodeResponse {
-    CountryIntPhoneCodeResult: number
+  CountryIntPhoneCodeResult: number;
 }

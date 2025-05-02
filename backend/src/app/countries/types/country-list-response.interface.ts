@@ -1,10 +1,10 @@
 export interface CountryListResponse {
-    ListOfCountryNamesByNameResult: {
-        tCountryCodeAndName: RawCountryListEntry[];
-    };
+  ListOfCountryNamesByNameResult: {
+    tCountryCodeAndName: RawCountryListEntry[];
+  };
 }
 
 export interface RawCountryListEntry {
-    sISOCode: string;
-    sName: string;
+  sISOCode: string;
+  sName: string;
 }

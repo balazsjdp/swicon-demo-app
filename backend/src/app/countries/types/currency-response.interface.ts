@@ -1,6 +1,6 @@
 export interface CurrencyResponse {
-    CountryCurrencyResult: {
-        sISOCode: string;
-        sName: string;
-    }
+  CountryCurrencyResult: {
+    sISOCode: string;
+    sName: string;
+  };
 }

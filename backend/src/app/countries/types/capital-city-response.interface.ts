@@ -1,3 +1,3 @@
 export interface CapitalCityResponse {
-    CapitalCityResult: string;
+  CapitalCityResult: string;
 }

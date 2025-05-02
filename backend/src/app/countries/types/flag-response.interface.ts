@@ -1,3 +1,3 @@
 export interface FlagResponse {
-    CountryFlagResult: string
+  CountryFlagResult: string;
 }
