@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@swicon-country-demo/shared": ["libs/shared/src/index.ts"]
+      "@swicon-country-demo/shared": ["libs/shared/src/index.ts"],
+      "@swicon-country-demo/package": ["package.json"]
     }
   },
   "exclude": ["node_modules", "tmp"]

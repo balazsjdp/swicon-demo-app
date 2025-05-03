@@ -1,4 +1,9 @@
-export interface CountryListEntry {
-  code: string;
-  name: string;
+import { ApiProperty } from '@nestjs/swagger';
+
+export class CountryListEntry {
+  @ApiProperty()
+  code!: string;
+
+  @ApiProperty()
+  name!: string;
 }
