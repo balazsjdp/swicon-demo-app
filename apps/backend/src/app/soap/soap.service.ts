@@ -10,7 +10,7 @@ export class SoapService {
    * @param wsdl URL or path to the WSDL file
    */
   async getClient<T>(wsdl: string): Promise<T> {
-    this.logger.log(`Creating SOAP client for: ${wsdl}`);
+    this.logger.debug(`Creating SOAP client for: ${wsdl}`);
 
     try {
       const client = await soap.createClientAsync(wsdl);

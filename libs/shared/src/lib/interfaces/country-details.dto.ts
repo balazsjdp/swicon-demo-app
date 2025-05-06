@@ -1,7 +1,6 @@
-// libs/shared/src/lib/models/country-details.model.ts
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CountryDetails {
+export class CountryDetailsDto {
   @ApiProperty()
   capital!: string;
 

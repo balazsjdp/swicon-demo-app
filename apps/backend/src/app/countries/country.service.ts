@@ -1,8 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CountryDetails, CountryListEntry } from '@swicon-country-demo/shared';
+import { CountryDetailsDto } from '@swicon-country-demo/shared';
 import { SoapService } from '../soap/soap.service';
 import { CountryInfoSoapClient } from '../soap/types/country-info-soap.client.interface';
-import { RawCountryListEntry } from './types/country-list-response.interface';
+import { RawCountryListEntry } from './types/soap-response-types/country-list-response.interface';
+import { CountryListEntry } from './types/country-list-entry.interface';
+import { CountryListOptions } from './types/country-list-options.interface';
 
 const WSDL_URL =
   'http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso?WSDL';
@@ -11,43 +13,37 @@ const WSDL_URL =
 export class CountryService {
   private readonly logger = new Logger(CountryService.name);
 
-  constructor(
-    private readonly soapService: SoapService
-  ) {}
+  constructor(private readonly soapService: SoapService) {}
 
   /**
-   * Retrieves a list of countries from the SOAP service or cache.
-   *
-   * Uses a cached value if available; otherwise, it fetches the list from the SOAP client
-   * and maps each raw country entry to a simplified structure.
-   *
-   * @returns {Promise<CountryListEntry[]>} A promise that resolves to an array of country list entries with ISO codes and names.
+   * Retrieves a list of countries from the SOAP service.
+   * Optionally enriches each country entry with additional fields.
    */
-  async getCountryList(): Promise<CountryListEntry[]> {
+  async getCountryList(options: CountryListOptions): Promise<CountryListEntry[]> {
+    this.logger.log(`Fetching country list with options: ${JSON.stringify(options)}`);
+
     const client = await this.soapService.getClient<CountryInfoSoapClient>(WSDL_URL);
-      const [result] = await client.ListOfCountryNamesByNameAsync({});
-      return result.ListOfCountryNamesByNameResult.tCountryCodeAndName.map(
-        (c: RawCountryListEntry) => ({
-          name: c.sName,
-          code: c.sISOCode,
-        }),
-      );
+    const [result] = await client.ListOfCountryNamesByNameAsync({});
+    const rawEntries = result.ListOfCountryNamesByNameResult.tCountryCodeAndName;
+
+    this.logger.log(`Retrieved ${rawEntries.length} countries from SOAP service`);
+
+    return Promise.all(
+      rawEntries.map((entry: RawCountryListEntry) =>
+        this.decorateCountry(entry, client, options),
+      ),
+    );
   }
+
   /**
-   * Retrieves detailed information for a specific country based on its ISO code.
-   *
-   * If the information is cached, it is returned directly. Otherwise, the method fetches:
-   * - Capital city
-   * - Currency ISO code
-   * - Country flag URL
-   * - International phone code
-   * from the SOAP service in parallel, and returns them in a structured format.
-   *
-   * @param {string} isoCode - The ISO 3166-1 alpha-2 code of the country (e.g., "US", "FR").
-   * @returns {Promise<CountryDetails>} A promise that resolves to the country's detailed information.
+   * Retrieves detailed information for a specific country.
    */
-  async getCountryDetails(isoCode: string): Promise<CountryDetails> {
+  async getCountryDetails(isoCode: string): Promise<CountryDetailsDto> {
+    this.logger.log(`Fetching country details for: ${isoCode}`);
+
     const client = await this.soapService.getClient<CountryInfoSoapClient>(WSDL_URL);
+    this.logger.debug('SOAP client initialized for country details');
+
     const [[capitalResult], [currencyResult], [flagResult], [phoneCodeResult]] =
       await Promise.all([
         client.CapitalCityAsync({ sCountryISOCode: isoCode }),
@@ -56,11 +52,78 @@ export class CountryService {
         client.CountryIntPhoneCodeAsync({ sCountryISOCode: isoCode }),
       ]);
 
+    this.logger.log(`Successfully fetched details for country: ${isoCode}`);
+
     return {
       capital: capitalResult.CapitalCityResult,
       currency: currencyResult.CountryCurrencyResult.sISOCode,
       flagUrl: flagResult.CountryFlagResult,
       phoneCode: phoneCodeResult.CountryIntPhoneCodeResult,
     };
+  }
+
+  /**
+   * Enriches a single raw country entry with optional fields (e.g. currency, flag, etc.).
+   */
+  private async decorateCountry(
+    entry: RawCountryListEntry,
+    client: CountryInfoSoapClient,
+    options: CountryListOptions,
+  ): Promise<CountryListEntry> {
+    const country: CountryListEntry = {
+      code: entry.sISOCode,
+      name: entry.sName,
+    };
+
+    if(Object.keys(options).length === 0) {
+      this.logger.debug(`No options provided for ${entry.sISOCode}, returning basic info`);
+      return country;
+    }
+
+    const tasks: Promise<void>[] = [];
+
+    if (options.currency) {
+      tasks.push(
+        client
+          .CountryCurrencyAsync({ sCountryISOCode: entry.sISOCode })
+          .then(([res]) => {
+            country.currency = res.CountryCurrencyResult?.sISOCode ?? null;
+          }),
+      );
+    }
+
+    if (options.capital) {
+      tasks.push(
+        client
+          .CapitalCityAsync({ sCountryISOCode: entry.sISOCode })
+          .then(([res]) => {
+            country.capital = res.CapitalCityResult;
+          }),
+      );
+    }
+
+    if (options.flagUrl) {
+      tasks.push(
+        client
+          .CountryFlagAsync({ sCountryISOCode: entry.sISOCode })
+          .then(([res]) => {
+            country.flagUrl = res.CountryFlagResult;
+          }),
+      );
+    }
+
+    if (options.phoneCode) {
+      tasks.push(
+        client
+          .CountryIntPhoneCodeAsync({ sCountryISOCode: entry.sISOCode })
+          .then(([res]) => {
+            country.phoneCode = String(res.CountryIntPhoneCodeResult);
+          }),
+      );
+    }
+
+    await Promise.all(tasks);
+    this.logger.debug(`Finished decorating ${entry.sISOCode} with options: ${JSON.stringify(options)}`);
+    return country;
   }
 }
