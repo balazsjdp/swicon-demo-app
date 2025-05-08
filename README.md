@@ -107,7 +107,7 @@ Uses the public SOAP API:
 
 ### Backend
 
-- NestJS v10/11
+- NestJS v11
 - node-soap
 - CacheInterceptor
 - Swagger (`@nestjs/swagger`) — **backend only**
