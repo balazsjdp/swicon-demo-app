@@ -50,6 +50,32 @@ The Angular app uses a proxy to communicate with the backend (no CORS issues).
 
 ---
 
+## 🐳 Docker Setup
+
+You can build and run the full stack using Docker and Docker Compose.
+
+### 📦 1. Build the containers
+
+```bash
+docker-compose build
+```
+
+### 🚀 2. Start the services
+
+```bash
+docker-compose up
+```
+
+- Frontend: [http://localhost:4200](http://localhost:4200)
+- Backend API: [http://localhost:3000/api](http://localhost:3000/api)
+- Backend Docs: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
+
+### 🛑 3. Stop and clean up
+
+```bash
+docker-compose down --volumes --remove-orphans
+```
+
 ## 🌐 API Overview (NestJS)
 
 Base URL: `http://localhost:3000/api`

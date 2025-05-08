@@ -1,0 +1,15 @@
+FROM node:20 AS builder
+
+WORKDIR /app
+COPY . .
+RUN npm install
+RUN npx nx build backend
+
+FROM node:20-slim
+
+WORKDIR /app
+COPY --from=builder /app/apps/dist/backend ./dist
+COPY --from=builder /app/package*.json ./
+RUN npm install --omit=dev
+
+CMD ["node", "dist/main.js"]
