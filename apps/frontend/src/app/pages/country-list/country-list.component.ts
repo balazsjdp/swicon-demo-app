@@ -1,27 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {CountryListEntryDto} from "@swicon-country-demo/shared"
+import { CountryListEntryDto } from '@swicon-country-demo/shared';
 import CountryService from '../../services/country.service';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { CountryCardComponent } from '../../components/country-card/country-card.component';
 
 @Component({
   selector: 'app-country-list',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, CountryCardComponent],
   templateUrl: './country-list.component.html',
-  styleUrl: './country-list.component.scss'
+  styleUrl: './country-list.component.scss',
 })
 export class CountryListComponent implements OnInit {
-  countries: CountryListEntryDto[] = [];
+  private readonly _countryService: CountryService = inject(CountryService);
 
-  constructor(private countryService: CountryService, private router: Router) {}
+  countries: CountryListEntryDto[] = [];
+  isLoading = signal(true);
 
   ngOnInit(): void {
-    this.countryService.getCountries().subscribe((data) => {
+    this._countryService.getCountries().subscribe((data) => {
       this.countries = data;
+      this.isLoading.set(false);
     });
-  }
-
-  navigateToDetails(code: string): void {
-    this.router.navigate(['/country', code]);
   }
 }

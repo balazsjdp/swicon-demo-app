@@ -1,32 +1,48 @@
-<div class="country-detail-container">
-  <div class="card">
-    <h1 class="country-name">Country Name</h1>
+<div
+  class="min-h-screen bg-gradient-to-br from-indigo-100 via-slate-100 to-sky-100 py-10 px-4 flex justify-center"
+>
+  <div class="bg-white w-full max-w-2xl rounded-xl shadow-xl p-8 md:p-10 border border-indigo-100">
+    <div class="text-center">
+      <h1 class="text-3xl md:text-4xl font-bold text-indigo-800 mb-6">Country Details</h1>
 
-    <div class="flag-container" *ngIf="countryDetails?.flagUrl">
-      <img [src]="countryDetails?.flagUrl" alt="flag image" />
-    </div>
-
-    <div class="info-grid">
-      <div class="info-item">
-        <label>ISO Code</label>
-        <p>{{ countryDetails?.code }}</p>
-      </div>
-      <div class="info-item">
-        <label>Capital</label>
-        <p>{{ countryDetails?.capital || 'N/A' }}</p>
-      </div>
-      <div class="info-item">
-        <label>Currency</label>
-        <p>{{ countryDetails?.currency || 'N/A' }}</p>
-      </div>
-      <div class="info-item">
-        <label>Phone Code</label>
-        <p>{{ countryDetails?.phoneCode || 'N/A' }}</p>
+      <div *ngIf="countryDetails?.flagUrl" class="flex justify-center mb-6">
+        <img
+          [src]="countryDetails?.flagUrl"
+          alt="Flag of the country"
+          class="h-32 w-auto rounded-md hover:scale-105 transition-transform duration-200"
+        />
       </div>
     </div>
 
-    <div class="back-button">
-      <a routerLink="/">← Back to country list</a>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-slate-800">
+      <div class="bg-indigo-50 rounded p-4 shadow-sm">
+        <p class="text-xs uppercase text-indigo-500 font-semibold">ISO Code</p>
+        <p class="text-lg font-medium">{{ countryDetails?.code }}</p>
+      </div>
+
+      <div class="bg-violet-50 rounded p-4 shadow-sm">
+        <p class="text-xs uppercase text-violet-500 font-semibold">Capital</p>
+        <p class="text-lg font-medium">{{ countryDetails?.capital || 'N/A' }}</p>
+      </div>
+
+      <div class="bg-sky-50 rounded p-4 shadow-sm">
+        <p class="text-xs uppercase text-sky-500 font-semibold">Currency</p>
+        <p class="text-lg font-medium">{{ countryDetails?.currency || 'N/A' }}</p>
+      </div>
+
+      <div class="bg-pink-50 rounded p-4 shadow-sm">
+        <p class="text-xs uppercase text-pink-500 font-semibold">Phone Code</p>
+        <p class="text-lg font-medium">{{ countryDetails?.phoneCode || 'N/A' }}</p>
+      </div>
+    </div>
+
+    <div class="mt-10 text-center">
+      <a
+        routerLink=""
+        class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md font-medium transition"
+      >
+        ← Back to countries
+      </a>
     </div>
   </div>
 </div>

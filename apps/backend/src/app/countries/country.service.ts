@@ -29,9 +29,7 @@ export class CountryService {
     this.logger.log(`Retrieved ${rawEntries.length} countries from SOAP service`);
 
     return Promise.all(
-      rawEntries.map((entry: RawCountryListEntry) =>
-        this.decorateCountry(entry, client, options),
-      ),
+      rawEntries.map((entry: RawCountryListEntry) => this.decorateCountry(entry, client, options)),
     );
   }
 
@@ -44,13 +42,12 @@ export class CountryService {
     const client = await this.soapService.getClient<CountryInfoSoapClient>(WSDL_URL);
     this.logger.debug('SOAP client initialized for country details');
 
-    const [[capitalResult], [currencyResult], [flagResult], [phoneCodeResult]] =
-      await Promise.all([
-        client.CapitalCityAsync({ sCountryISOCode: isoCode }),
-        client.CountryCurrencyAsync({ sCountryISOCode: isoCode }),
-        client.CountryFlagAsync({ sCountryISOCode: isoCode }),
-        client.CountryIntPhoneCodeAsync({ sCountryISOCode: isoCode }),
-      ]);
+    const [[capitalResult], [currencyResult], [flagResult], [phoneCodeResult]] = await Promise.all([
+      client.CapitalCityAsync({ sCountryISOCode: isoCode }),
+      client.CountryCurrencyAsync({ sCountryISOCode: isoCode }),
+      client.CountryFlagAsync({ sCountryISOCode: isoCode }),
+      client.CountryIntPhoneCodeAsync({ sCountryISOCode: isoCode }),
+    ]);
 
     this.logger.log(`Successfully fetched details for country: ${isoCode}`);
 
@@ -76,7 +73,7 @@ export class CountryService {
       name: entry.sName,
     };
 
-    if(Object.keys(options).length === 0) {
+    if (Object.keys(options).length === 0) {
       this.logger.debug(`No options provided for ${entry.sISOCode}, returning basic info`);
       return country;
     }
@@ -85,46 +82,40 @@ export class CountryService {
 
     if (options.currency) {
       tasks.push(
-        client
-          .CountryCurrencyAsync({ sCountryISOCode: entry.sISOCode })
-          .then(([res]) => {
-            country.currency = res.CountryCurrencyResult?.sISOCode ?? null;
-          }),
+        client.CountryCurrencyAsync({ sCountryISOCode: entry.sISOCode }).then(([res]) => {
+          country.currency = res.CountryCurrencyResult?.sISOCode ?? null;
+        }),
       );
     }
 
     if (options.capital) {
       tasks.push(
-        client
-          .CapitalCityAsync({ sCountryISOCode: entry.sISOCode })
-          .then(([res]) => {
-            country.capital = res.CapitalCityResult;
-          }),
+        client.CapitalCityAsync({ sCountryISOCode: entry.sISOCode }).then(([res]) => {
+          country.capital = res.CapitalCityResult;
+        }),
       );
     }
 
     if (options.flagUrl) {
       tasks.push(
-        client
-          .CountryFlagAsync({ sCountryISOCode: entry.sISOCode })
-          .then(([res]) => {
-            country.flagUrl = res.CountryFlagResult;
-          }),
+        client.CountryFlagAsync({ sCountryISOCode: entry.sISOCode }).then(([res]) => {
+          country.flagUrl = res.CountryFlagResult;
+        }),
       );
     }
 
     if (options.phoneCode) {
       tasks.push(
-        client
-          .CountryIntPhoneCodeAsync({ sCountryISOCode: entry.sISOCode })
-          .then(([res]) => {
-            country.phoneCode = String(res.CountryIntPhoneCodeResult);
-          }),
+        client.CountryIntPhoneCodeAsync({ sCountryISOCode: entry.sISOCode }).then(([res]) => {
+          country.phoneCode = String(res.CountryIntPhoneCodeResult);
+        }),
       );
     }
 
     await Promise.all(tasks);
-    this.logger.debug(`Finished decorating ${entry.sISOCode} with options: ${JSON.stringify(options)}`);
+    this.logger.debug(
+      `Finished decorating ${entry.sISOCode} with options: ${JSON.stringify(options)}`,
+    );
     return country;
   }
 }

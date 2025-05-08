@@ -26,7 +26,7 @@ export class CountryListEntryDto {
   capital?: string;
 
   @ApiPropertyOptional({
-    description: 'URL to the country\'s flag image',
+    description: "URL to the country's flag image",
     type: String,
   })
   flagUrl?: string;

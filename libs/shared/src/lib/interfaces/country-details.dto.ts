@@ -12,7 +12,7 @@ export class CountryDetailsDto {
     description: 'Official currency used in the country (e.g., "EUR", "CAD")',
   })
   currency!: string;
-  
+
   @ApiProperty({
     type: String,
     description: 'Capital city of the country (e.g., "Paris", "Ottawa")',
@@ -21,7 +21,7 @@ export class CountryDetailsDto {
 
   @ApiProperty({
     type: String,
-    description: 'URL to the country\'s flag image',
+    description: "URL to the country's flag image",
   })
   flagUrl!: string;
 

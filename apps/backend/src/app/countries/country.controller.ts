@@ -44,4 +44,3 @@ export class CountryController {
     return this.countryService.getCountryDetails(code);
   }
 }
-

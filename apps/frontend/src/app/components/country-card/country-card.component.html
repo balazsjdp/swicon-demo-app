@@ -1,0 +1,17 @@
+@if(country) {
+<div
+  class="bg-white rounded-xl p-4 shadow hover:shadow-lg border border-indigo-100 cursor-pointer transform transition-transform hover:-translate-y-1"
+  [routerLink]="['/country', country.code]"
+>
+  <div class="flex flex-col items-center">
+    <img
+      [src]="country.flagUrl"
+      [alt]="country.name + ' flag'"
+      class="w-20 h-auto mb-4 rounded-md border border-indigo-200"
+    />
+    <p class="text-center text-sm font-medium text-indigo-800">
+      {{ country.name }}
+    </p>
+  </div>
+</div>
+}

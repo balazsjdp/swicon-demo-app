@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {CountryDetailsDto} from "@swicon-country-demo/shared"
-import { ActivatedRoute } from '@angular/router';
+import { CountryDetailsDto } from '@swicon-country-demo/shared';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import CountryService from '../../services/country.service';
 
 @Component({
   selector: 'app-country-details',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './country-details.component.html',
-  styleUrl: './country-details.component.scss'
+  styleUrl: './country-details.component.scss',
 })
 export class CountryDetailsComponent implements OnInit {
   countryDetails: CountryDetailsDto | null = null;
