@@ -1,0 +1,9 @@
+<div class="country-grid">
+
+    @for (country of countries; track $index) {
+        <div [routerLink]="['/country', country.code]" class="country-card">
+            <img [src]="country.flagUrl" [alt]="country.name" />
+            <small>{{country.name}}</small>
+        </div>
+    }
+  </div>

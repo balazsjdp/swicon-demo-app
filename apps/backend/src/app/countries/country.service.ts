@@ -55,6 +55,7 @@ export class CountryService {
     this.logger.log(`Successfully fetched details for country: ${isoCode}`);
 
     return {
+      code: isoCode,
       capital: capitalResult.CapitalCityResult,
       currency: currencyResult.CountryCurrencyResult.sISOCode,
       flagUrl: flagResult.CountryFlagResult,

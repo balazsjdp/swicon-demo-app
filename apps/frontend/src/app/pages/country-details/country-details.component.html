@@ -1,0 +1,32 @@
+<div class="country-detail-container">
+  <div class="card">
+    <h1 class="country-name">Country Name</h1>
+
+    <div class="flag-container" *ngIf="countryDetails?.flagUrl">
+      <img [src]="countryDetails?.flagUrl" alt="flag image" />
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <label>ISO Code</label>
+        <p>{{ countryDetails?.code }}</p>
+      </div>
+      <div class="info-item">
+        <label>Capital</label>
+        <p>{{ countryDetails?.capital || 'N/A' }}</p>
+      </div>
+      <div class="info-item">
+        <label>Currency</label>
+        <p>{{ countryDetails?.currency || 'N/A' }}</p>
+      </div>
+      <div class="info-item">
+        <label>Phone Code</label>
+        <p>{{ countryDetails?.phoneCode || 'N/A' }}</p>
+      </div>
+    </div>
+
+    <div class="back-button">
+      <a routerLink="/">← Back to country list</a>
+    </div>
+  </div>
+</div>
