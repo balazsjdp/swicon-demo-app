@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CountryDetailsDto } from '@swicon-country-demo/shared';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -11,14 +11,15 @@ import CountryService from '../../services/country.service';
   styleUrl: './country-details.component.scss',
 })
 export class CountryDetailsComponent implements OnInit {
+  private readonly _countryService: CountryService = inject(CountryService);
+  private readonly _route: ActivatedRoute = inject(ActivatedRoute);
+
   countryDetails: CountryDetailsDto | null = null;
 
-  constructor(private route: ActivatedRoute, private countryService: CountryService) {}
-
   ngOnInit(): void {
-    const code = this.route.snapshot.paramMap.get('code');
+    const code = this._route.snapshot.paramMap.get('code');
     if (code) {
-      this.countryService.getCountryDetails(code).subscribe((data) => {
+      this._countryService.getCountryDetails(code).subscribe((data) => {
         this.countryDetails = data;
       });
     }
