@@ -1,98 +1,104 @@
-# SwiconCountryDemo
+# 🌍 Swicon Country Demo
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+An Nx monorepo project demonstrating a **NestJS + Angular** app that:
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+- Fetches country data from a public **SOAP API**
+- Exposes a **REST API** using NestJS
+- Renders country flags and details in a responsive **Angular** frontend
+- Uses **Tailwind CSS** for styling
+- Implements client-side caching, skeleton loaders, and modern Angular 17+ features
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+---
 
-## Run tasks
+## 🧱 Monorepo Structure (Nx)
 
-To run tasks with Nx use:
-
-```sh
-npx nx <target> <project-name>
+```
+apps/
+  ├── frontend/         → Angular 19 standalone app
+  └── backend/          → NestJS backend (REST + SOAP integration)
+libs/
+  └── shared/           → Shared types, interfaces
 ```
 
-For example:
+---
 
-```sh
-npx nx build myproject
+## 🚀 Getting Started
+
+### 1. Install dependencies
+
+```bash
+npm install
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### 2. Run the backend
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-
-```sh
-npx nx add @nx/react
+```bash
+nx serve backend
 ```
 
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
+Runs the NestJS backend at `http://localhost:3000/api`
+A Swagger docs page is available on `http://localhost:3000/api/docs`
 
-```sh
-# Generate an app
-npx nx g @nx/react:app demo
+### 3. Run the frontend
 
-# Generate a library
-npx nx g @nx/react:lib some-lib
+```bash
+nx serve frontend
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+Runs the Angular frontend at `http://localhost:4200`  
+The Angular app uses a proxy to communicate with the backend (no CORS issues).
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
 
-## Set up CI!
+## 🌐 API Overview (NestJS)
 
-### Step 1
+Base URL: `http://localhost:3000/api`
 
-To connect to Nx Cloud, run the following command:
+| Endpoint             | Method | Description                               |
+|----------------------|--------|-------------------------------------------|
+| `/countries`         | GET    | List of countries (with flag, name, etc)  |
+| `/countries/:code`   | GET    | Detailed info for a country               |
 
-```sh
-npx nx connect
-```
+Uses the public SOAP API:  
+> `http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso?WSDL`
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+---
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🎨 Frontend Features (Angular 19)
 
-### Step 2
+- Standalone components by default
+- Tailwind CSS for responsive design (using a CDN for easier setup)
+- Skeleton loading for the flag grid
+- Detail page with capital, currency, phone code
+- Route caching in the browser
+- Uses `@for` / `@if` Angular control flow syntax
+- Modern `inject(HttpClient)` DI pattern
+- Proxy config: `proxy.conf.json` (to avoid CORS errors when running on localhost)
 
-Use the following command to configure a CI workflow for your workspace:
+---
 
-```sh
-npx nx g ci-workflow
-```
+## 🛠 Technologies Used
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Backend
 
-## Install Nx Console
+- NestJS v10/11
+- node-soap
+- CacheInterceptor
+- Swagger (`@nestjs/swagger`) — **backend only**
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+### Frontend
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- Angular 19+
+- Standalone components + signals
+- Tailwind CSS (via CDN or postcss)
+- Vite (default Angular builder)
+- RxJS (`toSignal`, `lastValueFrom`, `tap`)
 
-## Useful links
+---
 
-Learn more:
+## 🚀 Improvement Ideas
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- 🧹 Create a backend cache interceptor
+- 🗂️ Angular route resolver for preloading data
+- 🌐 Add Search Functionality
 
-And join the Nx community:
-
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
